@@ -33,6 +33,10 @@ public class MetadataService {
                 event.getStatus());
 
         repository.save(metadata);
+        /*we are not implementing this into controller
+        because we are not going to call metadata service after saving because direcly we saved into db
+        but if we want we can create controller but not need
+        */
     }
 
     //search service call krega isliye isko banana padega

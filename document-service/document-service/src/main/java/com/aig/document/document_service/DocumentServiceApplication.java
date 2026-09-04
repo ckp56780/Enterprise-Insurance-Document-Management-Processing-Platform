@@ -17,24 +17,4 @@ public class DocumentServiceApplication {
 		SpringApplication.run(DocumentServiceApplication.class, args);
 
 	}
-		@Bean
-		CommandLineRunner testProducer (DocumentEventProducer producer){
-			return args -> {
-				DocumentCreatedEvent event =
-
-				new DocumentCreatedEvent(
-
-				3L,
-
-				"mumbai_ki_rat.pdf",
-
-				"PDF",
-
-				"CREATED");
-
-				producer.publish(event);
-
-			};
-		}
-
 }

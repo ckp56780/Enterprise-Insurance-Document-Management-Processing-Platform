@@ -14,6 +14,7 @@ public class MetadataController {
 
     private final MetadataService metadataService;
 
+    //search service call krega isliye isko banana padega
     @GetMapping
     public List<DocumentMetadata> getAllDocuments() {
         return metadataService.getAllDocuments();

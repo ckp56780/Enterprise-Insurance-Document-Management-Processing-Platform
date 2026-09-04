@@ -8,7 +8,9 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="Notification-Service" />
+        <module name="common-shared-library" />
         <module name="metadata-service" />
+        <module name="audit-service" />
         <module name="Search-Service" />
         <module name="document-service" />
       </profile>
@@ -18,6 +20,8 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="Notification-Service" options="-parameters" />
       <module name="Search-Service" options="-parameters" />
+      <module name="audit-service" options="-parameters" />
+      <module name="common-shared-library" options="-parameters" />
       <module name="document-service" options="-parameters" />
       <module name="metadata-service" options="-parameters" />
     </option>
