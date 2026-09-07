@@ -1,8 +1,11 @@
 package com.aig.document.document_service.producer;
 
 import com.aig.common.dto.AuditEvent;
-import com.aig.document.document_service.event.DocumentCreatedEvent;
-import com.aig.document.document_service.event.DocumentDeletedEvent;
+
+//below from a common library
+import com.aig.common.dto.*;
+
+import com.aig.common.dto.DocumentDeletedEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.aig.OCR;
+package com.aig.ocr_service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

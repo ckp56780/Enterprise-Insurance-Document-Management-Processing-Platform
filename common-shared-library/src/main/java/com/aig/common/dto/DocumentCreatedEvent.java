@@ -1,13 +1,15 @@
-package com.aig.document.document_service.event;
+package com.aig.common.dto;
 
-import lombok.*;
-//this is we are creating because we need to publish to audit
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DocumentDeletedEvent {
-
+public class DocumentCreatedEvent {
     private Long documentId;
     private String documentName;
     private String documentType;
