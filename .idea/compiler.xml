@@ -12,10 +12,12 @@
         <module name="Search-Service" />
         <module name="Notification-Service" />
         <module name="metadata-service" />
-        <module name="OCR-SERVICE" />
         <module name="document-service" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="OCR-SERVICE" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">

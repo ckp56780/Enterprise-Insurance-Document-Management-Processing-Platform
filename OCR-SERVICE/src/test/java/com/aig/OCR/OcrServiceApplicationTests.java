@@ -1,10 +1,10 @@
-package com.aig.audit;
+package com.aig.OCR;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class AuditServiceApplicationTests {
+class OcrServiceApplicationTests {
 
 	@Test
 	void contextLoads() {
