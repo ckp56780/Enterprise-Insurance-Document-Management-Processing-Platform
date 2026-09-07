@@ -11,6 +11,8 @@
         <option value="$PROJECT_DIR$/audit-service/audit-service/pom.xml" />
         <option value="$PROJECT_DIR$/common-shared-library/common-shared-library/pom.xml" />
         <option value="$PROJECT_DIR$/common-shared-library/pom.xml" />
+        <option value="$PROJECT_DIR$/OCR-service/audit-service/pom.xml" />
+        <option value="$PROJECT_DIR$/OCR-service/OCR-service/pom.xml" />
       </list>
     </option>
   </component>

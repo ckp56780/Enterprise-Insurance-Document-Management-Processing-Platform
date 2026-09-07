@@ -2,6 +2,7 @@ package com.aig.document.document_service.producer;
 
 import com.aig.common.dto.AuditEvent;
 import com.aig.document.document_service.event.DocumentCreatedEvent;
+import com.aig.document.document_service.event.DocumentDeletedEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -10,20 +11,37 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class DocumentEventProducer {
 
+    //this is constructor-based dependency injection
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     public DocumentEventProducer(KafkaTemplate<String, Object> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void publish(DocumentCreatedEvent documentEvent,
-                        AuditEvent auditEvent) {
+
+    //this publishes method will publish topic to all services
+    public void publishDocumentCreatedEvent(DocumentCreatedEvent documentEvent) {
 
         kafkaTemplate.send(
                 "document-created-topic",
                 documentEvent);
 
         log.info("DocumentCreatedEvent Published : {}", documentEvent);
+    }
+
+    //this is for delete-for all services
+    public void publishDocumentDeletedEvent(
+            DocumentDeletedEvent documentEvent) {
+
+        kafkaTemplate.send(
+                "document-deleted-topic",
+                documentEvent);
+
+        log.info("DocumentDeletedEvent Published : {}", documentEvent);
+    }
+
+    public void publishAuditEvent(
+            AuditEvent auditEvent) {
 
         kafkaTemplate.send(
                 "audit-events",

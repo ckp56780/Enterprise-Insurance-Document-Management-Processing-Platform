@@ -5,6 +5,7 @@ import com.aig.document.document_service.dto.DocumentRequest;
 import com.aig.document.document_service.dto.DocumentResponse;
 import com.aig.document.document_service.entity.Document;
 import com.aig.document.document_service.event.DocumentCreatedEvent;
+import com.aig.document.document_service.event.DocumentDeletedEvent;
 import com.aig.document.document_service.exception.ResourceNotFoundException;
 import com.aig.document.document_service.mapper.DocumentMapper;
 import com.aig.document.document_service.producer.DocumentEventProducer;
@@ -33,20 +34,20 @@ public class DocumentServiceImpl implements DocumentService {
 
         // Convert DTO to Entity
         Document document = mapper.toEntity(request);
-
-        // Save into database
         Document savedDocument = repository.save(document);
-
         log.info("Document created successfully with id : {}",
                 savedDocument.getId());
 
+        // Create Business Event-which will produce for all services
         DocumentCreatedEvent documentEvent =
                 DocumentCreatedEvent.builder()
                         .documentId(savedDocument.getId())
                         .documentName(savedDocument.getDocumentName())
                         .documentType(savedDocument.getDocumentType())
+                        .status(savedDocument.getStatus())
                         .build();
 
+        // Create Audit Event-only for audit
         AuditEvent auditEvent =
                 AuditEvent.builder()
                         .documentId(savedDocument.getId())
@@ -59,9 +60,11 @@ public class DocumentServiceImpl implements DocumentService {
                         .eventTime(LocalDateTime.now())
                         .build();
 
-        // Publish to Kafka
-        producer.publish(documentEvent, auditEvent);
+        // Publish Business Event-to all services
+        producer.publishDocumentCreatedEvent(documentEvent);
 
+        // Publish Audit Event
+        producer.publishAuditEvent(auditEvent);
         log.info("Audit event published for document id : {}",
                 savedDocument.getId());
 
@@ -101,10 +104,33 @@ public class DocumentServiceImpl implements DocumentService {
         Document document = repository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
-                                "Document Not Found : " + id));
+                                "Document Not Found with id : " + id));
 
+        //1. Delete from database
         repository.delete(document);
-
         log.info("Document deleted successfully with id : {}", id);
+
+        //2.this we are adding because need to notify all other services.
+        DocumentDeletedEvent documentEvent = DocumentDeletedEvent.builder().documentId(document.getId())
+                .documentName(document.getDocumentName())
+                .documentType(document.getDocumentType())
+                .status(document.getStatus())
+                .build();
+        producer.publishDocumentDeletedEvent(documentEvent);
+
+        //3.this is for only audit to send
+        AuditEvent auditEvent = AuditEvent.builder().serviceName("DOCUMENT_SERVICE")
+                .eventType("DOCUMENT_DELETED")
+                .documentId(document.getId())
+                .documentName(document.getDocumentName())
+                .documentType(document.getDocumentType())
+                .status(document.getStatus())
+                .description("Document deleted successfully")
+                .eventTime(LocalDateTime.now())
+                .build();
+        producer.publishAuditEvent(auditEvent);
+
+
+
     }
 }
