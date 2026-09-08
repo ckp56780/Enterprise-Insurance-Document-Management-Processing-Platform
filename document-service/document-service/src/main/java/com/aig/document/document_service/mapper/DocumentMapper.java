@@ -17,6 +17,7 @@ public class DocumentMapper {
                 .id(document.getId())
                 .documentName(document.getDocumentName())
                 .documentType(document.getDocumentType())
+                .fileUrl(document.getFileUrl())
                 .status(document.getStatus())
                 .build();
     }
@@ -26,7 +27,7 @@ public class DocumentMapper {
         return Document.builder()
                 .documentName(request.getDocumentName())
                 .documentType(request.getDocumentType())
-                .filePath(request.getFilePath())
+                .fileUrl(request.getFileUrl())
                 .status("UPLOADED")
                 .createdDate(LocalDateTime.now())
                 .updatedDate(LocalDateTime.now())

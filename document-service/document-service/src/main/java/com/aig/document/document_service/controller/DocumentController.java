@@ -6,8 +6,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/documents")
@@ -16,6 +18,18 @@ import org.springframework.web.bind.annotation.*;
 public class DocumentController {
 
     private final DocumentService service;
+
+    //POST /documents/upload
+    @PostMapping(
+            value = "/upload",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<DocumentResponse> uploadDocument(
+            @RequestParam("file")
+            MultipartFile file) {
+
+        return ResponseEntity.ok(
+                service.uploadDocument(file));
+    }
 
     @PostMapping
     public ResponseEntity<DocumentResponse>

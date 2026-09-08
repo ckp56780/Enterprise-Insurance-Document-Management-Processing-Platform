@@ -10,9 +10,11 @@ import com.aig.document.document_service.mapper.DocumentMapper;
 import com.aig.document.document_service.producer.DocumentEventProducer;
 import com.aig.document.document_service.repositroy.DocumentRepository;
 import com.aig.document.document_service.service.DocumentService;
+import com.aig.document.document_service.service.storage.S3StorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,6 +27,7 @@ public class DocumentServiceImpl implements DocumentService {
     private final DocumentRepository repository;
     private final DocumentMapper mapper;
     private final DocumentEventProducer producer;
+    private final S3StorageService s3StorageService;
 
     @Override
     public DocumentResponse createDocument(DocumentRequest request) {
@@ -43,6 +46,7 @@ public class DocumentServiceImpl implements DocumentService {
                         .documentId(savedDocument.getId())
                         .documentName(savedDocument.getDocumentName())
                         .documentType(savedDocument.getDocumentType())
+                        .fileUrl(savedDocument.getFileUrl())
                         .status(savedDocument.getStatus())
                         .build();
 
@@ -66,6 +70,64 @@ public class DocumentServiceImpl implements DocumentService {
         producer.publishAuditEvent(auditEvent);
         log.info("Audit event published for document id : {}",
                 savedDocument.getId());
+
+        return mapper.toResponse(savedDocument);
+    }
+    @Override
+    public DocumentResponse uploadDocument(
+            MultipartFile file) {
+
+        String s3Url =
+        s3StorageService.uploadFile(file);
+        String fileName =
+        file.getOriginalFilename();
+        String documentType = "unknown";
+        if (fileName != null && fileName.contains(".")) {
+            documentType =
+            fileName.substring(
+                    fileName.lastIndexOf(".") + 1)
+                    .toLowerCase();
+        }
+        Document document =
+                Document.builder()
+                        .documentName(
+                                file.getOriginalFilename())
+                        .documentType(documentType)
+                        .fileUrl(s3Url)
+                        .status("UPLOADED")
+                        .createdDate(LocalDateTime.now())
+                        .updatedDate(LocalDateTime.now())
+                        .build();
+
+        Document savedDocument =
+                repository.save(document);
+
+// Business Event--it will send it only to all services
+        DocumentCreatedEvent documentEvent =
+                DocumentCreatedEvent.builder()
+                        .documentId(savedDocument.getId())
+                        .documentName(savedDocument.getDocumentName())
+                        .documentType(savedDocument.getDocumentType())
+                        .fileUrl(savedDocument.getFileUrl())
+                        .status(savedDocument.getStatus())
+                        .build();
+
+        producer.publishDocumentCreatedEvent(documentEvent);
+
+// Audit Event-only for audit
+        AuditEvent auditEvent =
+                AuditEvent.builder()
+                        .documentId(savedDocument.getId())
+                        .documentName(savedDocument.getDocumentName())
+                        .documentType(savedDocument.getDocumentType())
+                        .serviceName("DOCUMENT_SERVICE")
+                        .eventType("DOCUMENT_CREATED")
+                        .status("SUCCESS")
+                        .description("Document uploaded successfully")
+                        .eventTime(LocalDateTime.now())
+                        .build();
+
+        producer.publishAuditEvent(auditEvent);
 
         return mapper.toResponse(savedDocument);
     }

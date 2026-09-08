@@ -16,4 +16,5 @@ public class DocumentResponse {
     private String documentType;
 
     private String status;
+    private String fileUrl;
 }

@@ -22,7 +22,7 @@ public class Document {
 
     private String documentType;
 
-    private String filePath;
+    private String fileUrl;
 
     private String status;
 

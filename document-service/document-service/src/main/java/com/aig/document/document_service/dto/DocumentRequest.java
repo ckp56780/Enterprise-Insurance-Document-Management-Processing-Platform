@@ -15,5 +15,5 @@ public class DocumentRequest {
     private String documentType;
 
     @NotBlank(message = "File Path is required")
-    private String filePath;
+    private String fileUrl;
 }

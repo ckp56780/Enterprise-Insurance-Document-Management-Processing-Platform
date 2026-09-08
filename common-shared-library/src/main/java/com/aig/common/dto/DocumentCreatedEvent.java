@@ -13,5 +13,6 @@ public class DocumentCreatedEvent {
     private Long documentId;
     private String documentName;
     private String documentType;
+    private String fileUrl;
     private String status;
 }
