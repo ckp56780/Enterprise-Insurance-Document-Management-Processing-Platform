@@ -1,7 +1,7 @@
 package com.aig.ocr_service.controller;
 
 import com.aig.ocr_service.dto.OcrResponse;
-import com.aig.ocr_service.service.OcrService;
+import com.aig.ocr_service.service.Ocrservice;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,19 +11,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+//this layer for fake/dummy
 @RestController
 @RequestMapping("/api/ocr")
 @RequiredArgsConstructor
 public class OcrController {
 
-    private final OcrService ocrService;
+    private final Ocrservice ocrservice;
 
     @GetMapping
     public ResponseEntity<List<OcrResponse>>
     getAllDocuments() {
 
         return ResponseEntity.ok(
-                ocrService.getAllDocuments());
+                ocrservice.getAllDocuments());
     }
 
     @GetMapping("/{documentId}")
@@ -32,7 +33,7 @@ public class OcrController {
             @PathVariable Long documentId) {
 
         return ResponseEntity.ok(
-                ocrService.getByDocumentId(
+                ocrservice.getByDocumentId(
                         documentId));
     }
 }

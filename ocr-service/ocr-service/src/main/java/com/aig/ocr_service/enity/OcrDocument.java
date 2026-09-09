@@ -24,7 +24,7 @@ public class OcrDocument {
 
     private String documentName;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "LONGTEXT")
     private String extractedText;
 
     private String status;
